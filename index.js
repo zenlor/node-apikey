@@ -9,7 +9,7 @@ module.exports = apikey;
 function apikey (fn, realm) {
   realm = realm || 'api key';
 
-  function apikey (req, res, next) {
+  return function (req, res, next) {
     var key = findApi(req) || auth(req);
 
     if (! key)
@@ -18,15 +18,15 @@ function apikey (fn, realm) {
     if (!! key.name)
       key = key.name;
 
-    fn(key, function (err, doc) {
+    fn(key, function (err, result) {
       if (!! err)
         return next(err);
 
-      if (!! doc)
+      if (!! result)
         return next();
 
       return unauthorized(res, realm);
-    })
+    });
   }
 }
 
