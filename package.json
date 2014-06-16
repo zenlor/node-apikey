@@ -1,0 +1,26 @@
+{
+  "name": "apikey",
+  "version": "0.0.1",
+  "description": "api key middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aliem/node-apikey.git"
+  },
+  "keywords": [
+    "api",
+    "key"
+  ],
+  "author": "aliem",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aliem/node-apikey/issues"
+  },
+  "homepage": "https://github.com/aliem/node-apikey",
+  "devDependencies": {
+    "mocha": "^1.20.1"
+  }
+}
