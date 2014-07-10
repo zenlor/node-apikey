@@ -10,8 +10,7 @@ function apikey (fn, realm) {
   realm = realm || 'api key';
 
   return function (req, res, next) {
-    var key = findApi(req) || auth(req);
-
+    var key = auth(req) || findApi(req);
     if (! key)
       return unauthorized(res, realm);
 
@@ -48,13 +47,14 @@ function unauthorized(res, realm) {
  * Looks for apikey inside readers and query
  * @api private
  */
-function findApi (req) {
-  return
-     req.headers['x-apikey']
-  || req.headers['apikey']
+function findApi (req, key) {
+  return req.headers['x-apikey']
+  || req.headers['x-api-key']
   || req.headers['x-api']
+  || req.headers['apikey']
   || req.headers['api']
-  || req.param('apikey') //FIXME: this only works using express.js
+  || req.param('api-key') //FIXME: this only works using express.js
+  || req.param('apikey')
   || req.param('api')
 }
 
