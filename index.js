@@ -85,7 +85,7 @@ function auth (req) {
 
   // credentials
   auth = new Buffer(auth, 'base64').toString();
-  auth = auth.match(/^([^:]+):(.*)$/); // password can be empty
+  auth = auth.match(/^([^:]+):?(.*)$/); // password can be empty
   if (!auth) return;
 
   return { name: auth[1], pass: auth[2] };
