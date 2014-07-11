@@ -1,5 +1,5 @@
 
-simple middleware to authorise the use of an URL.
+simple middleware to authorize the use of an URL.
 
 usage:
 
@@ -8,7 +8,8 @@ usage:
     app.use(require('apikey')(auth, 'my realm'));
 
     function auth (key, fn) {
-      fn(key === 'test')
+      ver error = null;
+      fn(error, key === 'test')
     }
 
     app.get('/' function (req,res) {
