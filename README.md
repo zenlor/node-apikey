@@ -1,20 +1,80 @@
+# Simple API KEY auth middleware
 
-simple middleware to authorize the use of an URL.
+[![npm](http://img.shields.io/npm/l/apikey.svg?style=flat-square)](https://www.npmjs.org/package/apikey)
+[![Build Status](http://img.shields.io/travis/aliem/node-apikey.svg?style=flat-square)](https://travis-ci.org/aliem/node-apikey)
+[![code climate](http://img.shields.io/codeclimate/github/aliem/node-apikey.svg?style=flat-square)](https://codeclimate.com/github/aliem/node-apikey)
 
-usage:
+Simple middleware to authenticate requests using an API Key, supports:
 
-    var app = require('express')();
+- Basic Auth: `http://apikey:@example.com/`
+- custom headers
+	- `x-apikey`
+	- `x-api-key`
+	- `apikey`
+- query strings
+	- `api-key`
+	- `apikey`
+	- `api`
 
-    app.use(require('apikey')(auth, 'my realm'));
+Currently works only on Express.
 
-    function auth (key, fn) {
-      ver error = null;
-      fn(error, key === 'test')
-    }
 
-    app.get('/' function (req,res) {
-      res.send('I can be reached only using an authorised api key.')
-    })
+## Example
+
+Server:
+```js
+var app = require('express')();
+
+app.use(require('apikey')(auth, 'my realm'));
+
+function auth (key, fn) {
+  ver error = null;
+  fn(error, key === 'test')
+}
+
+app.get('/' function (req,res) {
+  res.send('I can be reached only using an authorised api key.')
+})
+```
+
+
+Without authentication: `❯❯❯ curl -vv localhost:3000`
+
+```
+> GET / HTTP/1.1
+> User-Agent: curl/7.37.1
+> Host: localhost:3000
+> Accept: */*
+> 
+< HTTP/1.1 401 Unauthorized
+< X-Powered-By: Express
+< WWW-Authenticate: Basic realm="my realm"
+< Date: Tue, 09 Sep 2014 09:22:49 GMT
+< Connection: keep-alive
+< Transfer-Encoding: chunked
+< 
+Unauthorized
+```
+
+With password authentication `❯❯❯ curl -vv test:@localhost:3000`
+
+```
+> GET / HTTP/1.1
+> Authorization: Basic dGVzdDo=
+> User-Agent: curl/7.37.1
+> Host: localhost:3000
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< X-Powered-By: Express
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 2
+< ETag: W/"2-2044517703"
+< Date: Tue, 09 Sep 2014 09:22:55 GMT
+< Connection: keep-alive
+< 
+ok
+```
 
 ## License
 

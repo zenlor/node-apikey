@@ -4,7 +4,7 @@ app.use(function (req, res, next) {
   console.log(req.headers)
   next()
 })
-app.use(require('..')(auth, 'my realm'));
+app.use(require('./index')(auth, 'my realm'));
 
 function auth (key, fn) {
   fn(null, key === 'test')
