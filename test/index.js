@@ -1,14 +1,17 @@
+// test user
+var user = { id: 1, name: 'John Dorian' };
 
 // Test Application
-var app = require('express')();
-app.use(require('..')(auth, 'my realm'));
+var app = require('express')()
+app.use(require('..')(auth, 'my realm'))
 
 function auth (key, fn) {
-  fn(null, key === 'test')
+  fn(null, key === 'test' ? user : null)
 }
-app.get('/', function (req,res) {
-  res.send('ok');
-});
+
+app.get('/', function (req, res) {
+  res.send(req.user)
+})
 
 var request = require('supertest')(app);
 
@@ -27,6 +30,7 @@ describe('Basic Auth', function () {
     .get('/')
     .auth('test')
     .expect(200)
+    .expect(user)
     .end(done)
   })
 })
@@ -37,6 +41,7 @@ describe('Headers', function () {
     .get('/')
     .set('X-APIKEY', 'test')
     .expect(200)
+    .expect(user)
     .end(done)
   })
 
@@ -45,6 +50,7 @@ describe('Headers', function () {
     .get('/')
     .set('APIKEY', 'test')
     .expect(200)
+    .expect(user)
     .end(done)
   })
 
@@ -53,6 +59,7 @@ describe('Headers', function () {
     .get('/')
     .set('X-Api-Key', 'test')
     .expect(200)
+    .expect(user)
     .end(done)
   })
 })
