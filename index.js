@@ -3,30 +3,42 @@
  */
 module.exports = apikey;
 
+/*
+ * Modules
+ */
+var auth = require('./lib/basicauth');
+var findApi = require('./lib/findapi');
+
 /**
  * Auth Middleware
+ *
+ * @param {Function} fn   authentication function
+ * @param {String} realm  realm string
+ * @return {Function}     express middleware
  */
 function apikey (fn, realm) {
   realm = realm || 'api key';
 
   return function (req, res, next) {
-    var key = auth(req) || findApi(req);
+    var key = auth(req) || findApi(req.headers, req.query);
     if (! key)
       return unauthorized(res, realm);
 
-    if (!! key.name)
+    if (key.name)
       key = key.name;
 
     fn(key, function (err, result) {
-      if (!! err)
+      if (err)
         return next(err);
 
-      if (!! result)
+      if (result) {
+        req.user = result;
         return next();
+      }
 
       return unauthorized(res, realm);
     });
-  }
+  };
 }
 
 /**
@@ -41,52 +53,5 @@ function unauthorized(res, realm) {
   res.statusCode = 401;
   res.setHeader('WWW-Authenticate', 'Basic realm="' + realm + '"');
   res.end('Unauthorized');
-};
-
-/**
- * Looks for apikey inside readers and query
- * @api private
- */
-function findApi (req, key) {
-  return req.headers['x-apikey']
-  || req.headers['x-api-key']
-  || req.headers['x-api']
-  || req.headers['apikey']
-  || req.headers['api']
-  || req.param('api-key') //FIXME: this only works using express.js
-  || req.param('apikey')
-  || req.param('api')
 }
 
-/**
- * Taken from [basic-auth](https://www.npmjs.org/package/basic-auth)
- *
- * modified to accept empty passwords
- */
-
-/**
- * Parse the Authorization header field of `req`.
- *
- * @param {Request} req
- * @return {Object} with .name and .pass
- * @api public
- */
-function auth (req) {
-  req = req.req || req;
-
-  var auth = req.headers.authorization;
-  if (!auth) return;
-
-  // malformed
-  var parts = auth.split(' ');
-  if ('basic' != parts[0].toLowerCase()) return;
-  if (!parts[1]) return;
-  auth = parts[1];
-
-  // credentials
-  auth = new Buffer(auth, 'base64').toString();
-  auth = auth.match(/^([^:]+):?(.*)$/); // password can be empty
-  if (!auth) return;
-
-  return { name: auth[1], pass: auth[2] };
-};
