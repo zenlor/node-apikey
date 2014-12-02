@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/aliem/node-apikey",
   "devDependencies": {
-    "mocha": "~1.20.1",
+    "co": "^4.0.1",
     "express": "~4.5.1",
+    "koa": "^0.13.0",
+    "mocha": "~1.20.1",
     "supertest": "~0.13.0"
   }
 }
