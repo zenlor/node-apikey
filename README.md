@@ -21,15 +21,18 @@ Currently works only on Express.
 
 ## Example
 
-Server:
+Express Server:
+
 ```js
 var app = require('express')();
 
 app.use(require('apikey')(auth, 'my realm'));
 
 function auth (key, fn) {
-  ver error = null;
-  fn(error, key === 'test')
+  if ('test' === key)
+    fn(null, { id: '1', name: 'John Dorian'})
+  else
+    fn(null, null)
 }
 
 app.get('/' function (req,res) {
@@ -74,6 +77,28 @@ With password authentication `❯❯❯ curl -vv test:@localhost:3000`
 < Connection: keep-alive
 < 
 ok
+```
+
+### Example using Koa.js
+
+```js
+var app = require('koa')()
+
+app.use(require('apikey/koa')(auth, 'my realm'))
+
+// auth function should be a thunk or a promise
+function auth (key) {
+  return function (fn) {
+    if ('test' === key)
+      fn(null, { id: '1', name: 'John Dorian'})
+    else
+      fn(null, null)
+  }
+}
+
+app.use('/' function *() {
+  this.body = this.user
+})
 ```
 
 ## License
