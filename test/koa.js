@@ -4,7 +4,6 @@ var middleware = require('../koa');
 var app = koa();
 
 app.use(middleware(function (key) {
-  console.error('KEY: ', key);
   return function (fn) {
     process.nextTick(function () {
       if ('good' === key)
@@ -65,6 +64,14 @@ describe('Query string', function () {
 
   it('should authenticate a good user', function (done) {
     request.get('/?apiKey=bad')
+    .expect(401)
+    .end(done);
+  });
+});
+
+describe('Without authetication', function () {
+  it('should reject requests', function (done) {
+    request.get('/')
     .expect(401)
     .end(done);
   });

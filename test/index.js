@@ -63,3 +63,12 @@ describe('Headers', function () {
     .end(done)
   })
 })
+
+describe('No auth', function () {
+  it('should reject requests', function (done) {
+    request
+    .get('/')
+    .expect(401)
+    .end(done)
+  })
+})
