@@ -1,10 +1,10 @@
 {
   "name": "apikey",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "api key middleware",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R tap test"
+    "test": "mocha --harmony -R tap test"
   },
   "repository": {
     "type": "git",
